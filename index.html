@@ -1,74 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="utf-8" />
     <title>My App Name</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-    
+
+    <!-- CRITICAL: Proper mobile viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+    <!-- App icons -->
     <link rel="apple-touch-icon" href="https://drive.google.com/uc?export=view&id=1XFlH4UcvvXJhdVTKPtfdlxgrU1mS_4ct">
     <link rel="icon" type="image/png" href="https://drive.google.com/uc?export=view&id=1XFlH4UcvvXJhdVTKPtfdlxgrU1mS_4ct">
 
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!-- iOS PWA-like behavior -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
     <style>
         html, body {
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: -apple-system, sans-serif;
+            width: 100%;
+            overflow: hidden; /* Prevents scroll / weird zoom */
+            background: #ffffff;
             -webkit-text-size-adjust: 100%;
-            overflow: hidden; /* prevent weird scroll / zoom */
-        }
-        
-        /* The detailed instructions screen */
-        #install-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            text-align: center;
-            background: #f0f0f0;
-            padding: 20px;
-            box-sizing: border-box;
         }
 
-        .icon-preview {
-            width: 80px;
-            height: 80px;
-            border-radius: 18px;
-            background: #ddd;
-            margin-bottom: 20px;
+        /* Fullscreen iframe */
+        #app-frame {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
         }
     </style>
 </head>
 <body>
 
-    <div id="install-screen">
-        <img src="https://drive.google.com/uc?export=view&id=1XFlH4UcvvXJhdVTKPtfdlxgrU1mS_4ct" class="icon-preview">
-        <h2>Install My App</h2>
-        <p>To install this app on your iPhone:</p>
-        <p>1. Tap the <strong>Share</strong> icon below.</p>
-        <p>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
-    </div>
+    <iframe id="app-frame"></iframe>
 
     <script>
         // Your Google Apps Script URL
-        const googleScriptUrl = "https://script.google.com/macros/s/AKfycbzXuzDo73exFKeZTwrbXwNFi8RVf3U15lXR70d71MratCRi5EM7mdr0V0Ru0jb25L1w/exec";
+        const APP_URL = "https://script.google.com/macros/s/AKfycbzXuzDo73exFKeZTwrbXwNFi8RVf3U15lXR70d71MratCRi5EM7mdr0V0Ru0jb25L1w/exec";
 
-        // Are we running as a standalone (home screen) app on iOS?
-        const isStandalone = window.navigator.standalone === true;
-
-        if (isStandalone) {
-            // In standalone mode, immediately send the user to the Apps Script app
-            // so it can control the viewport correctly.
-            window.location.replace(googleScriptUrl);
-        } else {
-            // In normal Safari, just show the install instructions screen.
-            // (No redirect here so the URL stays the GitHub page when the user taps
-            // "Add to Home Screen".)
-        }
+        // Load the app directly inside the iframe
+        document.getElementById("app-frame").src = APP_URL;
     </script>
+
 </body>
 </html>
