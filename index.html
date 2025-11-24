@@ -3,7 +3,7 @@
 <head>
     <title>My App Name</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
     
     <link rel="apple-touch-icon" href="https://drive.google.com/uc?export=view&id=1XFlH4UcvvXJhdVTKPtfdlxgrU1mS_4ct">
     <link rel="icon" type="image/png" href="https://drive.google.com/uc?export=view&id=1XFlH4UcvvXJhdVTKPtfdlxgrU1mS_4ct">
@@ -12,7 +12,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <style>
-        body, html { margin: 0; padding: 0; height: 100%; font-family: -apple-system, sans-serif; }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: -apple-system, sans-serif;
+            -webkit-text-size-adjust: 100%;
+            overflow: hidden; /* prevent weird scroll / zoom */
+        }
         
         /* The detailed instructions screen */
         #install-screen {
@@ -24,14 +31,7 @@
             text-align: center;
             background: #f0f0f0;
             padding: 20px;
-        }
-
-        /* The actual app (hidden by default) */
-        #app-frame {
-            display: none; /* Hidden until we detect standalone mode */
-            width: 100%;
-            height: 100%;
-            border: none;
+            box-sizing: border-box;
         }
 
         .icon-preview {
@@ -40,7 +40,6 @@
             border-radius: 18px;
             background: #ddd;
             margin-bottom: 20px;
-            /* You can put your icon image here too for preview */
         }
     </style>
 </head>
@@ -54,25 +53,21 @@
         <p>2. Scroll down and tap <strong>Add to Home Screen</strong>.</p>
     </div>
 
-    <iframe id="app-frame"></iframe>
-
     <script>
-        // 3. YOUR GOOGLE SCRIPT URL GOES HERE
+        // Your Google Apps Script URL
         const googleScriptUrl = "https://script.google.com/macros/s/AKfycbzXuzDo73exFKeZTwrbXwNFi8RVf3U15lXR70d71MratCRi5EM7mdr0V0Ru0jb25L1w/exec";
 
-        // 4. DETECT IF RUNNING FROM HOME SCREEN
-        // iOS uses 'standalone' property
+        // Are we running as a standalone (home screen) app on iOS?
         const isStandalone = window.navigator.standalone === true;
 
         if (isStandalone) {
-            // We are on the home screen!
-            // Hide instructions
-            document.getElementById('install-screen').style.display = 'none';
-            
-            // Show and load the app
-            const iframe = document.getElementById('app-frame');
-            iframe.style.display = 'block';
-            iframe.src = googleScriptUrl;
+            // In standalone mode, immediately send the user to the Apps Script app
+            // so it can control the viewport correctly.
+            window.location.replace(googleScriptUrl);
+        } else {
+            // In normal Safari, just show the install instructions screen.
+            // (No redirect here so the URL stays the GitHub page when the user taps
+            // "Add to Home Screen".)
         }
     </script>
 </body>
